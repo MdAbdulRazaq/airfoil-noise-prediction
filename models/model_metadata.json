@@ -1,0 +1,74 @@
+{
+  "project_name": "airfoil-noise-prediction",
+  "project_title": "Airfoil Noise Predictor",
+  "dataset_source": "UCI Airfoil Self-Noise dataset #291, NASA wind tunnel experiment (airfoil self-noise)",
+  "dataset_doi": "10.24432/C5VW2C",
+  "raw_dataset_file": "data/raw/airfoil_self_noise.dat",
+  "target_column": "scaled_sound_pressure_level_db",
+  "input_columns": [
+    "frequency_hz",
+    "angle_of_attack_deg",
+    "chord_length_m",
+    "free_stream_velocity_m_s",
+    "suction_side_displacement_thickness_m"
+  ],
+  "model_features": [
+    "log10_frequency_hz",
+    "angle_of_attack_deg",
+    "chord_length_m",
+    "free_stream_velocity_m_s",
+    "suction_side_displacement_thickness_m"
+  ],
+  "feature_variant": "Experiment B",
+  "frequency_transformation": "log10(frequency_hz)",
+  "model": "SVR",
+  "kernel": "rbf",
+  "hyperparameters": {
+    "C": 100.0,
+    "epsilon": 0.2,
+    "gamma": "scale"
+  },
+  "preprocessing_steps": [
+    "log10(frequency_hz)",
+    "StandardScaler",
+    "SVR(kernel=rbf)"
+  ],
+  "validation": {
+    "train_holdout_split": {
+      "method": "GroupShuffleSplit",
+      "test_size": 0.2,
+      "random_state": 42,
+      "groups": "operating configurations (frequency excluded)"
+    },
+    "cross_validation": {
+      "method": "GroupKFold",
+      "n_splits": 5,
+      "groups": "training groups only"
+    },
+    "selection_metric": "lowest mean GroupKFold CV MAE",
+    "holdout_evaluated_once": true
+  },
+  "selection_basis": "lowest mean GroupKFold cross-validation MAE",
+  "random_seed": 42,
+  "n_train_observations": 1188,
+  "n_train_groups": 84,
+  "n_holdout_observations": 315,
+  "n_holdout_groups": 22,
+  "n_total_observations": 1503,
+  "cv_mae": 1.894726503490027,
+  "cv_mae_std": 0.329410281455861,
+  "cv_rmse": 2.6271886533651143,
+  "cv_rmse_std": 0.5014558095792675,
+  "cv_r2": 0.8555566496081104,
+  "cv_r2_std": 0.04216963212478465,
+  "holdout_mae": 2.067303297153895,
+  "holdout_rmse": 3.144363316245216,
+  "holdout_r2": 0.7701741540027169,
+  "python_version": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+  "package_versions": {
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scikit-learn": "1.9.1",
+    "joblib": "1.6.0"
+  }
+}
