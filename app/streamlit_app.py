@@ -8,9 +8,19 @@ directly; never duplicates input bounds (read from config.FEATURE_BOUNDS).
 from __future__ import annotations
 
 import logging
+import sys
 from pathlib import Path
 
 import streamlit as st
+
+# requirements.txt installs third-party dependencies only, so the local
+# src-layout package is not importable on Streamlit Cloud. Add the repo's src
+# directory to sys.path relative to this file (works on Linux and Windows).
+# ponytail: src path bootstrap; ceiling: entrypoint must stay next to src/.
+# Upgrade path: install the project via requirements.txt (-e .) and remove this.
+_SRC = Path(__file__).resolve().parents[1] / "src"
+if str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
 
 from airfoil_noise.config import FEATURE_BOUNDS, FEATURE_COLUMNS
 from airfoil_noise.data import load_raw_dataset
